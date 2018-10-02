@@ -1,0 +1,20 @@
+﻿@model bool
+@{
+    ViewBag.Title = "DeleteFile";
+}
+
+@{
+    if (Model)
+    {
+        <div class="success">
+            <h2> File deleted successfully. </h2>@Html.ActionLink("Back to DocumentViewer", "Index", "Drive", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <br/>
+    }
+    else
+    {
+        <h2 class="has-error">File did not deleted successfully,Please try again.</h2>
+    }
+}
+
+

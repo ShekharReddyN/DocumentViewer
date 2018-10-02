@@ -1,0 +1,88 @@
+﻿@model List<DocumentViewer.Models.FileViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    if (Model.Count <= 0)
+    {
+        <h2>No files exist.</h2>
+        <div class="success">
+            @Html.ActionLink("Back to DocumentViewer", "Index", "Drive")
+        </div>
+        <br />
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-offset-0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>FileName</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var _file in Model)
+                            {
+                                <tr id="@_file.Id">
+                                    <td>@_file.Name</td>
+                                    <td>
+                                        @{ using (Html.BeginForm("DownloadFile", "Drive", new { Id = _file.Id }, FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <div>
+
+                                                    <button type="submit" class="@(_file.Type == "Folder" ? "disabled" : "") btn btn-default" id="@_file.Id" name="provider" value="@_file.Id">Download</button>
+                                                </div>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("UploadFile", "Drive", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("ParentId", _file.Id);
+                                            <input type="file" name="file" id="file" />
+                                            <button type="submit" class="@(_file.Type == "Folder" ? "" : "disabled") btn btn-default" id="@_file.Id" name="provider" value="@_file.Id">Upload</button>
+                                        }
+                                    </td>
+                                    <td>
+                                        @{ using (Html.BeginForm("OpenFolder", "Drive", new { Id = _file.Id }, FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <div>
+
+                                                    <button type="submit" class="@(_file.Type == "Folder" ? "" : "disabled") btn btn-default" id="@_file.Id" name="provider" value="@_file.Id">Open</button>
+                                                </div>
+                                            }
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @{ using (Html.BeginForm("DeleteFile", "Drive", new { id = _file.Id }, FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <div>
+
+                                                    <button type="submit" class="btn btn-default" id="@_file.Id" name="provider" value="@_file.Id">Delete</button>
+                                                </div>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+}
+
